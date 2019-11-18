@@ -2,8 +2,8 @@
 import random
 from os import system
 from glob import glob
-from gtts import gTTS
 from io import BytesIO
+from gtts import gTTS
 from playsound import playsound
 clear = lambda: system('clear')
 
@@ -29,22 +29,20 @@ def read_words():
     
     #Display available test files
     print("The following test files are available:")
-    count = 1
-    for TestFile in AvailableTests:
-        print(str(count) + '.', TestFile)
-        count += 1
+    for (x, TestFile) in enumerate(AvailableTests, 1):
+        print(str(x) + '.', TestFile)
     print('\n')
 
     # Select test file
     option = 0
-    while option > count - 1 or option <1:
+    while option > len(AvailableTests) or option <1:
         try:
             option = int(input("Please choose an option and press enter: "))
         except ValueError:
             print('Please choose a valid option')
             option = 0
             continue
-        if option > count -1 or option < 1:
+        if option > len(AvailableTests) or option < 1:
             print("Please choose a valid option")
     
     file = AvailableTests[option - 1]
@@ -111,7 +109,7 @@ def take_test(fulltest,testwords,test_type):
         while True:
             retest = input("\nWould you like retest on the words you got wrong (y/n)? ")
             if retest.lower() == 'y':
-                take_test(testwords,wrong_answers, test_type)
+                take_test(testwords, wrong_answers, test_type)
             elif retest == 'n':
                 main_menu(fulltest)
 
@@ -153,10 +151,8 @@ def select_words(testwords, test_type):
 
 def display_words(test_words):
     """Display the test words from testwords.txt"""
-    count = 1
-    for word in test_words:
-        print(str(count)+'.',word)
-        count += 1
+    for (x, word) in enumerate(test_words, 1):
+        print(str(x)+'.',word)
     return test_words
     
 
