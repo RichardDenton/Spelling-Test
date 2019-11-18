@@ -30,7 +30,7 @@ def read_words():
     #Display available test files
     print("The following test files are available:")
     for (x, TestFile) in enumerate(AvailableTests, 1):
-        print(str(x) + '.', TestFile)
+        print(f'{str(x)}. {TestFile}')
     print('\n')
 
     # Select test file
@@ -73,10 +73,10 @@ def take_test(fulltest,testwords,test_type):
     clear()
     if test_type == 'random':
         random.shuffle(testwords)
-    print('You are taking a', test_type, 'test - Good luck!\n')
+    print(f'You are taking a {test_type} test - Good luck!\n')
     print('To hear a word repeated type * and press enter\n')
     for word in testwords:
-        print('\nQuestion', question_count, 'of', total_questions)
+        print(f'\nQuestion {question_count} of {total_questions}')
         answer = '*'
         while answer == '*':
             say(word)
@@ -150,9 +150,9 @@ def select_words(testwords, test_type):
         take_test(testwords,selected_words,test_type)
 
 def display_words(test_words):
-    """Display the test words from testwords.txt"""
+    """Display the test words from the loaded .txt file"""
     for (x, word) in enumerate(test_words, 1):
-        print(str(x)+'.',word)
+        print(f'{str(x)}. {word}')
     return test_words
     
 
