@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 import random
+import platform
 from os import system
 from glob import glob
 from io import BytesIO
 from gtts import gTTS
 from playsound import playsound
-clear = lambda: system('clear')
+
+def clear():
+    if platform.system() == 'Windows':
+        system('cls')
+    else:
+        system('clear')
 
 def say(speech):
     """Accepts a string and converts to speech writing to speech.mp3 and playing the file"""
@@ -47,35 +53,37 @@ def read_words():
     
     file = AvailableTests[option - 1]
 
-    test_words = []
+    global fileWords
+    fileWords = []
     with open(file, "r") as f:
         for line in f:
-            test_words.extend(line.split())    
+            fileWords.extend(line.split())    
     
     print('\nThese are the words contained in the selected file:\n')
-    display_words(test_words)
+    display_words(fileWords)
     while True:
         confirmfile = input("\nIs this the file you'd like to load (y/n)? ")
         if confirmfile.lower() == 'y':
-            main_menu(test_words)
+            main_menu()
         elif confirmfile.lower() == 'n':
             read_words()
 
-    return test_words
+    return 
 
-def take_test(fulltest,testwords,test_type):
+def take_test(testwords,test_type):
     """Accepts a list of words and tests spellings"""
     answers = []
     wrong_answers = []
     question_count = 1
     score = 0
     total_questions = len(testwords)
+    test = testwords[:]    #Used to prevent the global variable fileWords being altered by a random test
     clear()
     if test_type == 'random':
-        random.shuffle(testwords)
+        random.shuffle(test)
     print(f'You are taking a {test_type} test - Good luck!\n')
     print('To hear a word repeated type * and press enter\n')
-    for word in testwords:
+    for word in test:
         print(f'\nQuestion {question_count} of {total_questions}')
         answer = '*'
         while answer == '*':
@@ -94,24 +102,24 @@ def take_test(fulltest,testwords,test_type):
     print('*  Your results!   *')
     print('*                  *')
     print('********************\n')
-    for x in range(len(testwords)):
-        if answers[x] == testwords[x]:
+    for x in range(len(test)):
+        if answers[x] == test[x]:
             print(x+1, answers[x], u'\u2713') 
         else:
             print(x+1, answers[x], 'X\t', testwords[x])
     print('\nYou scored', score, 'out of', len(testwords))
-    if score == len(testwords):
+    if score == len(test):
         print('You got them all right, well done!')
         input('\nPress enter to go back to the main menu\n')
-        main_menu(fulltest)
+        main_menu()
     else:
         retest = ''
         while True:
             retest = input("\nWould you like retest on the words you got wrong (y/n)? ")
             if retest.lower() == 'y':
-                take_test(testwords, wrong_answers, test_type)
+                take_test(wrong_answers, test_type)
             elif retest == 'n':
-                main_menu(fulltest)
+                main_menu()
 
 def select_words(testwords, test_type):
     """Accepts a list of test words and a test_type
@@ -141,30 +149,28 @@ def select_words(testwords, test_type):
             selected_words.append(testwords[selected-1])
     if len(selected_words) == 0:
         input("\nNo words chosen, press enter to return to the main menu\n")
-        main_menu(testwords)
+        main_menu()
     else:
         print('\nYou have chosen to be tested on the following words:')
         for word in selected_words:
             print(word)
         input('\nPress enter to begin the test with the selected words\n')
-        take_test(testwords,selected_words,test_type)
+        take_test(selected_words,test_type)
 
-def display_words(test_words):
+def display_words(testWords):
     """Display the test words from the loaded .txt file"""
-    for (x, word) in enumerate(test_words, 1):
+    for (x, word) in enumerate(testWords, 1):
         print(f'{str(x)}. {word}')
-    return test_words
+    return
     
 
-def main_menu(test_words):
+def main_menu():
     """Displays the main menu and accepts options"""
     #Clear the screen and display the menu
     clear()
     print("------------------------------------")
     print("|                                  |")
     print("|   Spelling Tests for Monsters!   |")
-    print("|                                  |")
-    print("|            by Dadda              |")
     print("|                                  |")
     print("------------------------------------")
     print("\n\nMain Menu:\n")
@@ -188,21 +194,21 @@ def main_menu(test_words):
             print("Please choose a valid option")
     #Call the relevant function for the option chosen
     if option == 1:
-        take_test(test_words,test_words,'standard')
+        take_test(fileWords,'standard')
     elif option == 2:
-        take_test(test_words,test_words,'random')
+        take_test(fileWords,'random')
     elif option == 3:
-        select_words(test_words,'standard')
+        select_words(fileWords,'standard')
     elif option == 4:
-        select_words(test_words,'random')
+        select_words(fileWords,'random')
     elif option == 5:
         clear()
         print("The following words are in your spelling test:\n")
-        display_words(test_words)
+        display_words(fileWords)
         input('\nPress enter to continue\n')
-        main_menu(test_words)
+        main_menu()
     elif option == 6:
-        main_menu(read_words())
+        read_words()
     else:
         say('Goodbye')
         quit()
@@ -210,7 +216,7 @@ def main_menu(test_words):
 
 def main():
     say("Welcome to spelling tests for monsters")
-    test_words = read_words()
-    main_menu(test_words)
+    read_words()
+    main_menu()
 
 main()
