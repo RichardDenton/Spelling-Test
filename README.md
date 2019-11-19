@@ -8,5 +8,4 @@ file. The .txt files must be located in the same directory as the program.
 The program uses gtts to convert the text words into speech .
 
 Required modules:
-gtts
-playsound
+gtts and playsound
