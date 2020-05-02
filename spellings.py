@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 import platform
+import os
 from os import system
 from glob import glob
 from io import BytesIO
@@ -18,6 +19,7 @@ def say(speech):
     tts = gTTS(speech)
     tts.save('speech.mp3')
     playsound('speech.mp3')
+    os.remove('speech.mp3')
 
 def read_words():
     """Lists all *.txt files in the directory and allows a test file to be chosen"""
